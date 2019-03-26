@@ -4,7 +4,7 @@ from burp import IIntruderPayloadGeneratorFactory
 from burp import IIntruderPayloadGenerator
 
 from java.util import List, ArrayList
-
+import sys
 import random
 
 class BurpExtender(IBurpExtender, IIntruderPayloadGeneratorFactory):
@@ -14,10 +14,10 @@ class BurpExtender(IBurpExtender, IIntruderPayloadGeneratorFactory):
     callbacks.registerIntruderPayloadGeneratorFactory(self)
     return
 
-def generatorName(name):
+def getGeneratorName(name):
   return "Payload generator"
 
-def reuseNewInstance(self, action):
+def createNewInstance(self, action):
   return ProkFuzz(self, action)
 
 class ProKFuzz(IIntruderPayloadGenerator):
@@ -32,13 +32,13 @@ class ProKFuzz(IIntruderPayloadGenerator):
     return
 
 
-  def morePayloads(self):
+  def hasMorePayloads(self):
     if self.num_iterators == self.max_payloads:
       return false
     else:
       return true
 
-    def nextPayload(self, current_payload):
+    def getNextPayload(self, current_payload):
       payload ="".join(chr(x) for x in current_payload)
       payload = self.mutate_payload(payload)
       self.sum_iterations += 1
